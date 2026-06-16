@@ -1,41 +1,183 @@
-📌 Project Overview
-This repository features an end-to-end data analytics project focused on evaluating supermarket performance, customer purchasing behaviors, and operational efficiencies. Utilizing an iterative analysis workflow, the project processes thousands of historical transaction records to discover patterns across multiple retail branches, optimize marketing outreach, and assist inventory managers with data-driven decision-making.
+# 🛒 Supermarket Pulse: A Data-Driven Operations Analysis of Q1 2019
 
-The project transitions from standard exploratory data analysis (EDA) into advanced probability distribution modeling and hypothesis testing to validate critical business assumptions.
-🛠️ Data Architecture & Workflow
-The analysis is structured across specialized modules designed to transition raw data into actionable retail strategies:
+> *Cleaning the noise. Finding the signal. Telling the story behind every transaction.*
 
-1. Data Cleansing & Transformation (Clean data)
-Prepared a transaction ledger spanning diverse geographical branches (including Yangon, Naypyitaw, and Mandalay).
+---
 
-Standardized features including unit pricing, quantities, cost of goods sold (COGS), gross income, and consumer ratings.
+## 📌 Project Overview
 
-Structured date and time features to capture distinct shifting trends and foot traffic velocity.
+This capstone project puts me in the role of a **Data Analyst** for a supermarket chain running three branches across Egypt — **Alexandria, Cairo, and Giza**. Starting from a raw, messy extract of roughly **1,000 transactions** covering Q1 2019, the goal was to turn noisy data into clear, actionable business intelligence — all within a single Excel workflow.
 
-2. Descriptive Statistics & Baseline Performance (Status Summary)
-Engineered baseline metrics across the revenue funnel (Mean Sales: ~$322.26).
+The analysis moves through five stages: data cleaning, descriptive statistics, visual dashboarding, probability modeling, and hypothesis formulation. Every metric calculated answers a real business question; every chart was built with management decision-making in mind.
 
-Monitored dispersion and structural bounds via variance and standard deviation mapping to understand customer basket sizes.
+---
 
-Established random sampling baselines (60 sample buckets) calculating Margin of Error ($61.04 at a 95% Certainty Level) to ensure analytical data integrity.
-3. Probability Distribution Modeling (Distribution)Applied statistical distributions to solve distinct operational challenges:Normal Distribution: Modeled purchase totals to evaluate basket sizes. Discovered that while there is a ~76.5% probability of a transaction falling at or below $500, there is only a slim ~2.59% probability of a transaction exceeding $800, directing focus toward high-volume smaller baskets.Binomial Distribution: Evaluated payment method probabilities. Calculated specific success rates for credit card transactions within fixed walk-in batches to optimize checkout counter infrastructure.Poisson Distribution: Modeled daily foot traffic transaction frequency (Average $\lambda \approx 10.94$ transactions per segment) to predict next-day transaction volumes.Exponential Distribution: Analyzed point-of-sale (POS) equipment failure rates ($\lambda \approx 0.022$) to calculate the precise probability of hardware disruptions over time.
-4. Hypothesis Testing (Hypothesis)
-Executed statistical tests to validate core commercial assumptions:
+## 🗂️ Dataset
 
-Test 1 (Card Member Expenditures): Conducted a One-Tailed Directional Test to determine if subscription/membership status yields a statistically significant increase in average spending compared to "Normal" checkout customers.
+| Attribute      | Detail                                            |
+| -------------- | ------------------------------------------------- |
+| **Period**     | Q1 2019 (January – March)                         |
+| **Branches**   | Alexandria (A), Cairo (B), Giza (C)               |
+| **Total Rows** | ~974 (after cleaning)                             |
+| **Tool Used**  | Microsoft Excel (Power Query + Formulas + Charts) |
 
-Test 2 (Gender-Based Rating Variances): Conducted a Two-Tailed Non-Directional Test to evaluate whether a statistical difference exists between customer satisfaction ratings provided by male versus female shoppers.
+**Key columns:** Invoice ID, Branch, City, Customer Type, Gender, Product Line, Unit Price, Quantity, Tax, Total, Date, Time, Payment Method, COGS, Gross Margin, Gross Income, Customer Rating.
 
-🎯 Key Strategic Insights
-Targeted Marketing Optimization: Visual analysis and data mapping isolated explicit branch trends. For example, observations indicate that if the marketing team has a limited promotional budget for "E-Wallet" users, campaigns should be aggressively funneled into the Giza/Mandalay pipeline to maximize conversion.
+---
 
-Workforce & Shift Scheduling: Poisson distribution models on hourly transactions provide store managers with the baseline predictive analytics needed to schedule employee shifts dynamically. This optimizes labor costs and minimizes overtime expenses during low-sales periods.
+## 🔧 Part 1 — Data Cleaning (Power Query)
 
-Inventory Focus: Normal distribution modeling strongly suggests that the store keeper shouldprioritize high-turnover inventory optimization for small-to-medium basket sizes rather than overstocking items tailored for rare, ultra-high-value baskets. 💻 Tech & Methodology Stack
-Exploratory Data Analysis (EDA): Descriptive analytics, central tendency assessment, and  dispersion calculations.
+The raw dataset came with a few structural problems that would have corrupted any downstream analysis if left alone:
 
-Inferential Statistics: Z-scores, standard error calculations, interval estimation, and directional/non-directional hypothesis testing.
+- **Merged columns:** `City_CustType` bundled two separate attributes into one field. I split these into `City` and `Customer Type` using the correct delimiter.
+- **Text inconsistency:** Product line entries had inconsistent capitalization. I applied *Capitalize Each Word* to normalize everything.
+- **Null values:** Rows with blank `Rating` fields were removed — they couldn't contribute to satisfaction analysis.
+- **Data types:** `Unit Price` and `Total` were cast to Currency; `Quantity` was cast to Whole Number.
 
-Operational Modeling: Continuous and discrete probability distributions (Normal, Binomial, Poisson, Exponential).
+The cleaned output was loaded into a dedicated `Clean_Data` sheet — the single source of truth for all subsequent work.
 
-Data Visualization: Trend lines, scatter plots, column bar charts, distribution histograms, and contribution pie charts.prioritize high-turnover inventory optimization for small-to-medium basket sizes rather than overstocking items tailored for rare, ultra-high-value baskets.
+---
+
+## 📊 Part 2 — Baseline Metrics & Statistical Summary
+
+With clean data in place, I moved to establishing the financial and behavioral baseline for the quarter.
+
+| Metric                             | Value                   |
+| ---------------------------------- | ----------------------- |
+| **Mean Total Bill**                | $322.26                 |
+| **Median Total Bill**              | $253.39                 |
+| **Standard Deviation (Rating)**    | ~1.72                   |
+| **Margin of Error (95% CI, n=60)** | Calculated via Z = 1.96 |
+
+### 🔍 Observation 1 — Skewness in Sales Revenue
+
+The mean ($322.26) sits noticeably above the median ($253.39) — a gap of $68.87. This is the classic fingerprint of a **right-skewed distribution**: a handful of very large purchases pulling the mean upward while the majority of transactions sit at lower values. With a standard deviation of $245.65, transaction amounts are highly spread out.
+
+**Implication:** The median is a more honest picture of a *typical* customer transaction. Management shouldn't anchor operational expectations to the mean figure.
+
+---
+
+## 📈 Part 3 — Visual Dashboard
+
+I built four visualizations to give management an at-a-glance picture of Q1 operations.
+
+### Scatter Plot — Total Bill vs. Quantity
+<img width="800" height="500" alt="xy_scatter" src="https://github.com/user-attachments/assets/4cbf2cca-b904-4432-b750-d120fb6a8528" />
+
+
+A positive linear relationship exists between quantity purchased and total bill (R² = 0.4957). About **49.57%** of the variation in total bill is explained by quantity alone — a moderate but meaningful correlation. The trend is real, not random.
+
+---
+
+### Bar Chart — Sales by Branch
+<img width="800" height="500" alt="sales_by_branches" src="https://github.com/user-attachments/assets/9555fe3c-7fe2-46f4-a40a-b59a696e3889" />
+
+All three branches performed within a tight band in Q1 2019:
+
+| Branch         | Total Sales|
+| -------------- | ------------- |
+| Alexandria     | $103,013      |
+| Cairo          | $102,875      |
+| **Giza**       | **$107,993**  |
+
+Giza leads — not by a dramatic margin, but consistently.
+
+---
+
+### Pie Chart — Payment Method Breakdown
+<img width="800" height="500" alt="payment_type_pie" src="https://github.com/user-attachments/assets/75ab6bac-a71c-4c92-aea7-4db00e51d02d" />
+
+
+Customer payment preferences were nearly evenly split across all three channels:
+
+- **Ewallet:** 35%
+- **Cash:** 34%
+- **Credit Card:** 31%
+
+The near-parity signals a diverse, digitally-engaged customer base and opens the door for targeted payment promotions.
+
+---
+
+### Histogram — Distribution of Customer Ratings
+
+Customer ratings (on a scale of 4–10) showed a broadly **uniform distribution**, with a slight spike at the [4, 4.5] bin and a mild dip at the upper end ([9.5, 10]). There's no strong concentration of very high ratings — satisfaction is consistent but hasn't hit exceptional territory.
+<img width="800" height="500" alt="histogram_trend" src="https://github.com/user-attachments/assets/1bd62543-37f8-461f-b353-a77ada4909b5" />
+
+
+---
+
+### 🔍 Observation 2 — Ewallet Promotion Strategy
+
+**Giza is the best target for any Ewallet campaign.** It had the highest total revenue ($107,993), the widest Ewallet transaction spread, and an estimated Ewallet revenue of ~$37,797 (35% × $107,993) — the highest across all branches. Concentrating a promotion here reinforces existing high-value Ewallet behavior and delivers the best return per marketing dollar.
+
+---
+
+## 🎲 Part 4 — Probability Modeling
+
+### Normal Distribution — Sales Revenue
+
+Using Mean = $322.26 and SD = $245.65:
+
+| Scenario                        | Probability |
+| ------------------------------- | ----------- |
+| Customer spends **≤ $500**      | **76.53%**  |
+| Customer spends **≥ $800**      | **2.59%**   |
+
+**Observation 3:** More than three-quarters of customers spend under $500, and purchases above $800 are statistically rare — roughly 1 in every 39 customers. The data strongly favors a **volume-over-premium strategy**: stock for frequent, moderate-sized baskets rather than high-ticket items that sit on shelves.
+
+---
+
+### Binomial Distribution — Credit Card Usage (p = 0.31)
+
+| Scenario                                        | Probability |
+| ----------------------------------------------- | ----------- |
+| Exactly 20 of 50 customers pay by credit card   | **4.63%**   |
+| Exactly 0 of 10 customers pay by credit card    | **2.45%**   |
+
+Both outcomes are statistical edge cases. Credit card usage is steady but not dominant — planning POS terminals or staffing purely around card traffic would be a miscalculation.
+
+---
+
+### Poisson, Exponential & Uniform Distributions
+
+Additional probability models were applied to specific operational questions:
+
+- **Poisson (Foot Traffic):** Modeled daily transaction probability to guide shift scheduling. Extreme outlier volumes (e.g., 120 transactions/day) are very unlikely and shouldn't drive baseline staffing decisions.
+- **Exponential (Equipment Failure):** With printer jams averaging every 45 minutes, the probability of one occurring within a 20-minute window is non-trivial (~36%). Preventive maintenance schedules should account for this.
+- **Uniform (Voucher Draw):** Each of 300 receipts holds an equal 1/300 probability of winning — no receipt number carries any advantage.
+
+---
+
+## 🧪 Part 5 — Hypothesis Formulation
+
+### Test 1 — Member vs. Normal Customer Spend
+
+- **H₀:** The average total spend of Member customers = the average total spend of Normal customers.
+- **H₁:** The average total spend of Member customers > the average total spend of Normal customers.
+- **Test type:** One-tailed (directional) — the marketing team suspects Members spend *more*, not just *differently*.
+
+### Test 2 — Customer Rating by Gender
+
+- **H₀:** The average customer rating for Male shoppers = the average customer rating for Female shoppers.
+- **H₁:** There is a difference in average rating between Male and Female shoppers.
+- **Test type:** Two-tailed (non-directional) — no prior assumption is made about which group rates higher.
+
+---
+
+## 🛠️ Tools & Techniques
+
+| Category               | Tool / Method                                    |
+| ---------------------- | ------------------------------------------------ |
+| Data Cleaning          | Excel Power Query                                |
+| Descriptive Statistics | Excel (AVERAGE, MEDIAN, MODE, STDEV.S, VAR.S)    |
+| Visualizations         | Excel Charts (Scatter, Bar, Pie, Histogram)      |
+| Probability Modeling   | NORM.DIST, BINOM.DIST, POISSON.DIST, EXPON.DIST  |
+| Hypothesis Framing     | One-tailed and two-tailed T-test structure       |
+
+---
+
+*This project was completed as a capstone for an Excel for Data Analytics course, applying statistical and analytical techniques to a real-world retail operations scenario.*
+
+---
+
+> *"Without data, you're just another person with an opinion."* — W. Edwards Deming
