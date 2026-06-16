@@ -1,4 +1,4 @@
-# 🛒 Supermarket Pulse: A Data-Driven Operations Analysis of Q1 2019
+# 🛒 Supermarket Analysis Project: A Data-Driven Operations Analysis of Q1 2019
 
 > *Cleaning the noise. Finding the signal. Telling the story behind every transaction.*
 
@@ -62,16 +62,13 @@ The mean ($322.26) sits noticeably above the median ($253.39) — a gap of $68.8
 I built four visualizations to give management an at-a-glance picture of Q1 operations.
 
 ### Scatter Plot — Total Bill vs. Quantity
-<img width="800" height="500" alt="xy_scatter" src="https://github.com/user-attachments/assets/4cbf2cca-b904-4432-b750-d120fb6a8528" />
-
-
+<img width="800" height="500" alt="xy_scatter" src="https://github.com/user-attachments/assets/69abff2a-4732-4ed5-b0fb-62eecea14aed" />
 A positive linear relationship exists between quantity purchased and total bill (R² = 0.4957). About **49.57%** of the variation in total bill is explained by quantity alone — a moderate but meaningful correlation. The trend is real, not random.
 
 ---
 
 ### Bar Chart — Sales by Branch
-<img width="800" height="500" alt="sales_by_branches" src="https://github.com/user-attachments/assets/9555fe3c-7fe2-46f4-a40a-b59a696e3889" />
-
+<img width="800" height="500" alt="sales_by_branches" src="https://github.com/user-attachments/assets/ed70106a-5371-483f-ae45-fcebf28cc8d9" />
 All three branches performed within a tight band in Q1 2019:
 
 | Branch         | Total Sales|
@@ -85,8 +82,7 @@ Giza leads — not by a dramatic margin, but consistently.
 ---
 
 ### Pie Chart — Payment Method Breakdown
-<img width="800" height="500" alt="payment_type_pie" src="https://github.com/user-attachments/assets/75ab6bac-a71c-4c92-aea7-4db00e51d02d" />
-
+<img width="800" height="500" alt="payment_type_by_quantity" src="https://github.com/user-attachments/assets/84ddaf42-dc2b-4c6c-9fbd-fd26883e6590" />
 
 Customer payment preferences were nearly evenly split across all three channels:
 
@@ -101,9 +97,8 @@ The near-parity signals a diverse, digitally-engaged customer base and opens the
 ### Histogram — Distribution of Customer Ratings
 
 Customer ratings (on a scale of 4–10) showed a broadly **uniform distribution**, with a slight spike at the [4, 4.5] bin and a mild dip at the upper end ([9.5, 10]). There's no strong concentration of very high ratings — satisfaction is consistent but hasn't hit exceptional territory.
-<img width="800" height="500" alt="histogram_trend" src="https://github.com/user-attachments/assets/1bd62543-37f8-461f-b353-a77ada4909b5" />
 
-
+<img width="800" height="500" alt="histogram_trend" src="https://github.com/user-attachments/assets/7de7dda4-0369-4a40-93ea-af7bc840e664" />
 ---
 
 ### 🔍 Observation 2 — Ewallet Promotion Strategy
